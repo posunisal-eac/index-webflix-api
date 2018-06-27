@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="src/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="src/css/style.css" />
+
+    <title>Webflix :: Trabalho Pós</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm bg-light justify-content-center mb-5">
+        <a class="navbar-brand" href="#">Webflix</a>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col">
+
+                <ul class="nav nav-tabs nav-justified">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#home">Usuários cadastrados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#menu1">Inserir novo usuário</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+                    <div class="tab-pane container active" id="home">
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 col-12">
+                                <h2 class="my-4 text-center">Inserir novo usuário:</h2>
+
+                                <div id="form-usuario">
+                                    <div class="form-group">
+                                        <label for="nome">Nome:</label>
+                                        <input type="text" class="form-control" id="inputNome" name="inputNome" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input type="email" class="form-control" id="inputEmail" name="inputEmail" />
+                                    </div>
+                                    <button class="btn btn-primary" id="inserirUsuario">Inserir usuário</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane container fade" id="menu1">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-12">
+                                <h2 class="my-4 text-center">Listagem de usuários:</h2>
+                                <table class="table table-striped" id="tabelaListagemUsuarios">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nome</th>
+                                            <th>Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="src/js/jquery-3.1.1.min.js"></script>
+    <script src="src/js/bootstrap.min.js"></script>
+
+    <script>
+
+        var usuarios = "";
+
+        function carregarUsuario(arrayUsuarios) {
+            arrayUsuarios.forEach(usuario => {
+                listaUsuarios.append(`<tr><td>${usuario.id}</td><td>${usuario.name}</td><td>${usuario.email}</td></tr>`);
+            });
+        }
+
+        let listaUsuarios = $("#tabelaListagemUsuarios tbody");
+        let url = "https://webflix-eac.herokuapp.com/api/v1/";
+
+        $.ajax({
+            url: url + "user/all",
+            type: 'GET',
+            crossDomain: true,
+            dataType: 'json',
+            success: function (result) {
+                carregarUsuario(result);
+            }
+        });
+
+        $("#form-usuario button#inserirUsuario").click(function (e) {
+
+            let form = $("#form-usuario");
+
+            let inputNome = $("[name=inputNome]").val();
+            let inputEmail = $("[name=inputEmail]").val();
+
+            var data = {
+                "name": inputNome,
+                "email": inputEmail
+            }
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://webflix-eac.herokuapp.com/api/v1/user",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(data)
+            }
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                alert(`Dados inseridos com sucesso!\n\nNome; ${inputNome}\nE-mail: ${inputEmail}`);
+            });
+        });
+
+    </script>
+
+
+</body>
+
+</html>
